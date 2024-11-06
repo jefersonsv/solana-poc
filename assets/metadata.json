@@ -2,7 +2,7 @@
   "name": "Second TOKEN",
   "symbol": "STOK",
   "description": "This is the second token",
-  "image": "https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/DeveloperPortal/image.png",
+  "image": "https://raw.githubusercontent.com/jefersonsv/solana-poc/refs/heads/master/assets/image.json",
   "attributes": [
     {
       "trait_type": "Item",

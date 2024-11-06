@@ -61,7 +61,7 @@ import fs from "fs";
     name: "Second TOKEN",
     symbol: "STOK",
     uri:
-      "https://raw.githubusercontent.com/jefersonsv/solana-poc/refs/heads/master/assets/image.png",
+      "https://raw.githubusercontent.com/jefersonsv/solana-poc/refs/heads/master/assets/metadata.json",
     additionalMetadata: [["author", "Jeferson"]],
   };
 
