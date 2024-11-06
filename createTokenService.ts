@@ -58,10 +58,10 @@ import fs from "fs";
   const metaData: TokenMetadata = {
     updateAuthority: updateAuthority,
     mint: mint,
-    name: "First TOKEN",
-    symbol: "FTOK",
-    // uri:
-    //   "https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/DeveloperPortal/metadata.json",
+    name: "Second TOKEN",
+    symbol: "STOK",
+    uri:
+      "https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/DeveloperPortal/metadata.json",
     additionalMetadata: [["author", "Jeferson"]],
   };
 

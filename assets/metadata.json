@@ -1,0 +1,12 @@
+{
+  "name": "Second TOKEN",
+  "symbol": "STOK",
+  "description": "This is the second token",
+  "image": "https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/DeveloperPortal/image.png",
+  "attributes": [
+    {
+      "trait_type": "Item",
+      "value": "Rentable Voucher"
+    }
+  ]
+}
