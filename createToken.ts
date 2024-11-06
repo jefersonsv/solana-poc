@@ -31,17 +31,6 @@ async function createToken() {
     9
   );
 
-  const createMetadataTransaction = new CreateMetadataV2(
-    { feePayer: publicKey },
-    {
-      metadata: metadataPDA,
-      metadataData: tokenMetadata,
-      updateAuthority: publicKey,
-      mint: mintKeypair.publicKey,
-      mintAuthority: publicKey,
-    }
-  );
-
   console.log("Token created:", mint.toBase58()); //
   return mint;
 }

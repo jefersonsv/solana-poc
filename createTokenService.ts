@@ -1,12 +1,16 @@
 import {
+  createAssociatedTokenAccount,
   createInitializeMetadataPointerInstruction,
   createInitializeMintInstruction,
+  createMintToInstruction,
   ExtensionType,
   getMetadataPointerState,
   getMint,
   getMintLen,
+  getOrCreateAssociatedTokenAccount,
   getTokenMetadata,
   LENGTH_SIZE,
+  mintTo,
   TOKEN_2022_PROGRAM_ID,
   TYPE_SIZE,
 } from "@solana/spl-token";
@@ -21,6 +25,7 @@ import {
   clusterApiUrl,
   Connection,
   Keypair,
+  PublicKey,
   sendAndConfirmTransaction,
   SystemProgram,
   Transaction,
@@ -58,8 +63,8 @@ import fs from "fs";
   const metaData: TokenMetadata = {
     updateAuthority: updateAuthority,
     mint: mint,
-    name: "Second TOKEN",
-    symbol: "STOK",
+    name: "Third TOKEN",
+    symbol: "TOK3",
     uri:
       "https://raw.githubusercontent.com/jefersonsv/solana-poc/refs/heads/master/assets/metadata.json",
     additionalMetadata: [["author", "Jeferson"]],
@@ -125,6 +130,18 @@ import fs from "fs";
     value: metaData.additionalMetadata[0][1], // value
   });
 
+  // Set initial supply amount (for example 1000 tokens)
+  const initialSupply = 10595698 * 10 ** decimals; // Adjust according to the decimals
+
+  // Instruction to mint the initial supply to the associated token account
+  const mintToInstruction = createMintToInstruction(
+    //associatedTokenAccount.address, // Recipient token account
+    mint, // Mint address
+    mint, //mint //wallet.publicKey,
+    mintAuthority, // Mint authority
+    initialSupply // Amount to mint
+  );
+
   // Add instructions to new transaction
   transaction = new Transaction().add(
     createAccountInstruction,
@@ -132,8 +149,11 @@ import fs from "fs";
     // note: the above instructions are required before initializing the mint
     initializeMintInstruction,
     initializeMetadataInstruction,
-    updateFieldInstruction
+    updateFieldInstruction,
+    mintToInstruction
   );
+
+  await printBalance(wallet.publicKey);
 
   // Send transaction
   transactionSignature = await sendAndConfirmTransaction(
@@ -142,11 +162,34 @@ import fs from "fs";
     [payer, mintKeypair] // Signers
   );
 
+  await printBalance(wallet.publicKey);
+
   console.log(
     "\nCreate Mint Account:",
     `https://solana.fm/tx/${transactionSignature}?cluster=devnet-solana`
   );
 })();
+// Create Mint Account: https://solana.fm/tx/5mH5NCnT8kbaFLGWwjxYSVJwc7Ne9RMhVPLtbqPPJZtHX7eYRGeBhmkj41vNVT4vqwEvDe7UEc4m9wsGbhXhSnGi?cluster=devnet-solana
+// https://explorer.solana.com/tx/5mH5NCnT8kbaFLGWwjxYSVJwc7Ne9RMhVPLtbqPPJZtHX7eYRGeBhmkj41vNVT4vqwEvDe7UEc4m9wsGbhXhSnGi?cluster=devnet
+// https://www.youtube.com/watch?v=l7EyQUlNAdw
+
+// Mint to
+
+async function printBalance(wallet: PublicKey) {
+  const balance = await getBalanceSOL(wallet);
+  console.info(balance);
+}
+
+async function getBalanceSOL(wallet: PublicKey) {
+  const connection = new Connection(
+    "https://api.devnet.solana.com",
+    "confirmed"
+  );
+
+  // const publicKey = new PublicKey(wallet);
+  const balance = await connection.getBalance(wallet);
+  return balance / 1e9; // SOL is in lamports, so divide by 1e9 to get SOL
+}
 
 /*
 import {
@@ -165,16 +208,7 @@ import { pack, TokenMetadata } from "@solana/spl-token-metadata";
 import { clusterApiUrl, Connection, Keypair, PublicKey } from "@solana/web3.js";
 import fs from "fs";
 
-async function getBalanceSOL(wallet: PublicKey) {
-  const connection = new Connection(
-    "https://api.devnet.solana.com",
-    "confirmed"
-  );
 
-  // const publicKey = new PublicKey(wallet);
-  const balance = await connection.getBalance(wallet);
-  return balance / 1e9; // SOL is in lamports, so divide by 1e9 to get SOL
-}
 
 async function createToken() {
   // Create a new token with the wallet as the initial mint authority
